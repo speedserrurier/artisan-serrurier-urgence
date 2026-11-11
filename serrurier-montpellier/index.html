@@ -2,14 +2,17 @@
 
 <html lang="fr">
 <head>
-<!-- Google Tag Manager -->
-<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-55DMMBWJ"></script>
+<!-- Google Tag Manager : conteneur GTM existant -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-55DMMBWJ');</script>
+<!-- End Google Tag Manager -->
+<!-- Google Ads : conversion de formulaire envoyée seulement après succès Web3Forms -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18569301747"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag(){window.dataLayer.push(arguments);}
   gtag('js', new Date());
+  gtag('config', 'AW-18569301747');
 </script>
-<!-- End Google Tag Manager -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <meta content="#27507a" name="theme-color"/>
@@ -2106,8 +2109,14 @@ footer { padding: 28px 22px 22px; }
       }
       show('Votre demande a bien été envoyée. Nous vous recontacterons rapidement.', '#166534');
       form.reset();
+      // Un envoi validé par l'API Web3Forms = une conversion Google Ads.
+      // Aucun événement de conversion ne part lors d'une simple visite ou d'un échec.
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({event: 'web3forms_success', form_id: 'contact-form'});
       if (typeof window.gtag === 'function') {
-        window.gtag('event', 'generate_lead', {form_id: 'contact-form'});
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-18569301747/swPWCJ_Xz7YdEPOdxJZF'
+        });
       }
     } catch (error) {
       show('Envoi impossible : ' + (error.message || 'vérifiez votre connexion') + '. Vous pouvez nous appeler au 07 56 93 03 70.', '#b91c1c');
@@ -2118,6 +2127,20 @@ footer { padding: 28px 22px 22px; }
     }
   });
 })();
+</script>
+<script>
+// Suivi des clics sur tous les liens téléphoniques, y compris le bouton mobile flottant.
+// À relier à une action Google Ads distincte via GTM : ne représente pas un appel abouti.
+document.addEventListener('click', function(event) {
+  var link = event.target.closest && event.target.closest('a[href^="tel:"]');
+  if (!link) return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: 'phone_click',
+    phone_target: link.getAttribute('href'),
+    click_location: link.className || 'phone-link'
+  });
+}, true);
 </script>
 </body>
 </html>
